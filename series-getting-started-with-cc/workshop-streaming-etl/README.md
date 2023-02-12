@@ -76,7 +76,7 @@ An environment contains Confluent clusters and its deployed components such as C
 
 ## <a name="step-4"></a>Step 4: Setup ksqlDB
 
-1. On the navigation menu, select **ksqlDB** and click **Create application myself**.
+1. On the navigation menu, select **ksqlDB** and click **Create cluster myself**.
 
 1. Select **Global Access** and then **Continue**.
 
