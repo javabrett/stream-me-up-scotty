@@ -22,15 +22,6 @@
 
 ***
 
-## **Architecture Diagram**
-
-<div align="center">
-    <img src="images/architecture.png" width=75% height=75%>
-</div>
-
-This workshop will be utilizing mongoDB Atlas, BigQuery, and Data Studio instances that are being managed by Confluent. You will not be able to access these instances outside of the workshop time.  To test ksqlDB and connectors outside of the workshop you can take a look at the ksqlDB [quickstart](https://docs.confluent.io/cloud/current/get-started/ksql.html) and fully-managed connectors [page](https://docs.confluent.io/cloud/current/connectors/index.html#kafka-connect-cloud).
-***
-
 ## **Prerequisites**
 
 1. Confluent Cloud Account
