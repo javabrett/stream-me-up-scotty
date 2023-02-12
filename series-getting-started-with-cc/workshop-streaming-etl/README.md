@@ -2,7 +2,7 @@
     <img src="images/confluent.png" width=50% height=50%>
 </div>
 
-# <div align="center">Build Streaming ETL Pipelines With Connectors, KsqlDB And Schema Registry</div>
+# <div align="center">Service for Business - Confluent Cloud Workshop</div>
 ## <div align="center">Lab Guide</div>
 
 ## **Agenda**
