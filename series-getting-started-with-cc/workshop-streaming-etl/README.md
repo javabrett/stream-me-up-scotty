@@ -10,7 +10,6 @@
 1. [Create an Environment and Cluster](#step-2)
 1. [Setup ksqlDB](#step-4)
 1. [Create an API Key Pair](#step-6)
-1. [Cloud Dashboard Walkthrough](#step-8)
 1. [Create Streams and Tables using ksqlDB](#step-9)
 1. [Stream Processing with ksqlDB](#step-10)
 1. [Connect BigQuery sink to Confluent Cloud](#step-11)
@@ -96,12 +95,6 @@ An environment contains Confluent clusters and its deployed components such as C
 1. Save your API key and secret - you will need these during the workshop.
 
 1. After creating and saving the API key, you will see this API key in the Confluent Cloud UI in the **API keys** tab. If you don’t see the API key populate right away, refresh the browser.
-
-***
-
-## <a name="step-8"></a>Step 8: Cloud Dashboard Walkthrough
-
-This section will be conducted by the workshop instructor.  You can find additional information on the Cloud Dashboard [here](https://docs.confluent.io/cloud/current/overview.html) and [here](https://docs.confluent.io/cloud/current/client-apps/cloud-basics.html).
 
 ***
 
