@@ -69,6 +69,8 @@ An environment contains Confluent clusters and its deployed components such as C
 
     * Choose **AWS** as your Cloud Provider and your preferred Region (**Sydney (ap-southeast-2)**).
 
+    * When prompted for payment info, select **Skip payment** in the bottom-right corner.  The $400 credit provided with new accounts is more than sufficient for this workshop.
+
     * Specify a meaningful **Cluster Name** and then review the associated *Configuration & Cost*, *Usage Limits*, and *Uptime SLA* before clicking **Launch Cluster**.
 
 ***
