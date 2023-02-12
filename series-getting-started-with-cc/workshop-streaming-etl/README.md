@@ -8,7 +8,6 @@
 ## **Agenda**
 1. [Log Into Confluent Cloud](#step-1)
 1. [Create an Environment and Cluster](#step-2)
-1. [Create a Schema Registry Instance](#step-3)
 1. [Setup ksqlDB](#step-4)
 1. [Create a Topic using the Cloud UI](#step-5)
 1. [Create an API Key Pair](#step-6)
@@ -72,20 +71,6 @@ An environment contains Confluent clusters and its deployed components such as C
     * When prompted for payment info, select **Skip payment** in the bottom-right corner.  The $400 credit provided with new accounts is more than sufficient for this workshop.
 
     * Specify a meaningful **Cluster Name** and then review the associated *Configuration & Cost*, *Usage Limits*, and *Uptime SLA* before clicking **Launch Cluster**.
-
-***
-
-## <a name="step-3"></a>Step 3: Create a Schema Registry Instance
-
-A topic contains messages, and each message is a key-value pair. The message key or the message value (or both) can be serialized as JSON, Avro, or Protobuf. A schema defines the structure of the data format.
-
-Confluent Cloud Schema Registry is used to manage schemas and it defines a scope in which schemas can evolve. It stores a versioned history of all schemas, provides multiple compatibility settings, and allows schemas to evolve according to these compatibility settings. It is also fully-managed.
-
-You will be exploring Confluent Cloud Schema Registry in more detail towards the end of the workshop. First, you will need to enable Schema Registry within your environment.
-
-1. Return to your environment by clicking on the Confluent icon at the top left corner and then clicking your environment tile.
-
-1. Click on **Schema Registry**. Select your cloud provider and region, and then click on **Enable Schema Registry**.
 
 ***
 
