@@ -9,7 +9,6 @@
 1. [Log Into Confluent Cloud](#step-1)
 1. [Create an Environment and Cluster](#step-2)
 1. [Setup ksqlDB](#step-4)
-1. [Create a Topic using the Cloud UI](#step-5)
 1. [Create an API Key Pair](#step-6)
 1. [Connect mongoDB Atlas source to Confluent Cloud](#step-7)
 1. [Cloud Dashboard Walkthrough](#step-8)
