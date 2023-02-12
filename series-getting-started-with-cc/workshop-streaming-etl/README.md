@@ -10,11 +10,12 @@
 1. [Create an Environment and Cluster](#step-2)
 1. [Setup ksqlDB](#step-4)
 1. [Create an API Key Pair](#step-6)
-1. [Create Streams and Tables using ksqlDB](#step-9)
-1. [Stream Processing with ksqlDB](#step-10)
-1. [Connect BigQuery sink to Confluent Cloud](#step-11)
-1. [Clean Up Resources](#step-11)
-1. [Confluent Resources and Further Testing](#confluent-resources-and-further-testing)
+2. [Getting Started with Apache Kafka and Java](#step-7)
+3. [Create Streams and Tables using ksqlDB](#step-9)
+4. [Stream Processing with ksqlDB](#step-10)
+5. [Connect BigQuery sink to Confluent Cloud](#step-11)
+6. [Clean Up Resources](#step-11)
+7. [Confluent Resources and Further Testing](#confluent-resources-and-further-testing)
 
 ***
 
@@ -95,6 +96,12 @@ An environment contains Confluent clusters and its deployed components such as C
 1. Save your API key and secret - you will need these during the workshop.
 
 1. After creating and saving the API key, you will see this API key in the Confluent Cloud UI in the **API keys** tab. If you don’t see the API key populate right away, refresh the browser.
+
+***
+
+## <a name="step-7"></a>Step 7: Getting Started with Apache Kafka and Java
+
+Complete the exercises outlined in [Getting Started with Apache Kafka and Java](https://developer.confluent.io/get-started/java).
 
 ***
 
