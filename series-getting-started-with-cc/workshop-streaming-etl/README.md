@@ -58,6 +58,7 @@ An environment contains Confluent clusters and its deployed components such as C
 
     * Specify a meaningful `name` for your environment and then click **Create**.
         > **Note:** It will take a few minutes to assign the resources to make this new environment available for use.
+    * When prompted, select the free **Essentials** package as the Stream Governance package for your new Environment.  Click **Begin Configuration**, then select **AWS** as your cloud provider, and select **Sydney (ap-southeast-2)** as the Region for Stream Governance, then click **Enable**.
 
 1. Now that you have an environment, let's create a cluster. Select **Create Cluster**.
     > **Note**: Confluent Cloud clusters are available in 3 types: **Basic**, **Standard**, and **Dedicated**. Basic is intended for development use cases so you should use that for this lab. Basic clusters only support single zone availability. Standard and Dedicated clusters are intended for production use and support Multi-zone deployments. If you’re interested in learning more about the different types of clusters and their associated features and limits, refer to this [documentation](https://docs.confluent.io/current/cloud/clusters/cluster-types.html).
