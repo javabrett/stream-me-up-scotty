@@ -10,7 +10,6 @@
 1. [Create an Environment and Cluster](#step-2)
 1. [Setup ksqlDB](#step-4)
 1. [Create an API Key Pair](#step-6)
-1. [Connect mongoDB Atlas source to Confluent Cloud](#step-7)
 1. [Cloud Dashboard Walkthrough](#step-8)
 1. [Create Streams and Tables using ksqlDB](#step-9)
 1. [Stream Processing with ksqlDB](#step-10)
@@ -97,41 +96,6 @@ An environment contains Confluent clusters and its deployed components such as C
 1. Save your API key and secret - you will need these during the workshop.
 
 1. After creating and saving the API key, you will see this API key in the Confluent Cloud UI in the **API keys** tab. If you don’t see the API key populate right away, refresh the browser.
-
-***
-
-## <a name="step-7"></a>Step 7: Connect mongoDB Atlas to Confluent Cloud
-
-The next step is to source data from mongoDB using the [fully-managed mongoDB Atlas Source connector] (https://docs.confluent.io/cloud/current/connectors/cc-mongo-db-source.html). The connector will send real time data on clicks, inventory, and transactions to Confluent Cloud.
-
-1. First, you will create the connector that will send data to clicks, inventory, and transactions topics. From the Confluent Cloud UI, click on the **Connectors** tab on the navigation menu. Search and click on the **mongoDB Atlas Source** icon.
-
-1. Enter the following configuration details. The remaining fields can be left blank.
-
-<div align="center">
-
-| Setting            | Value                        |
-|------------------------|-----------------------------------------|
-| `Name`      | MongoDbAtlasSourceConnector |
-| `Kafka API Key`              | From step 6                 |
-| `Kafka API Secret`           | From step 6              |
-| `Connection host`    | Will be provided during workshop            |
-| `Connection user` | dbUser               |
-| `Connection password`    | MONGODB_PW             |
-| `Database name`    | abc           |
-| `Copy existing data`    | True             |
-| `Output message format`    | JSON           |
-| `Tasks`    | 1             |
-
-</div>
-
-3. Click on **Next**.
-
-1. Before launching the connector, you will be brought to the summary page.  Once you have reviewed the configs and everything looks good, select **Launch**.
-
-1. This should return you to the main Connectors landing page. Wait for your newly created connector to change status from **Provisioning** to **Running**.
-
-1. If you navigate back to the **Topics** tab you will notice two newly created topics **abc.transactions** and **abc.clicks**.  The connector automatically created these two additional topics based on the collections in the mongoDB Atlas database where data is being sourced from.
 
 ***
 
@@ -339,11 +303,9 @@ Deleting the resources you created during this workshop will prevent you from in
 
 2. Delete the BigQuery sink connector by navigating to **Connectors** in the navigation panel, clicking your connector name, then clicking the trash can icon in the upper right and entering the connector name to confirm the deletion.
 
-3. Delete the mongoDB Atlas source connector by navigating to **Connectors** under Cluster in the navigation panel, clicking your connector name, then clicking the trash can icon in the upper right and entering the connector name to confirm the deletion.
+3. Delete the Cluster by going to the **Settings** tab and then selecting **Delete cluster**
 
-4. Delete the Cluster by going to the **Settings** tab and then selecting **Delete cluster**
-
- 5. Delete the Environment by expanding right hand menu and going to **Environments** tab and then clicking on **Delete** for the associated Environment you would like to delete
+4. Delete the Environment by expanding right hand menu and going to **Environments** tab and then clicking on **Delete** for the associated Environment you would like to delete
 
 ***
 
