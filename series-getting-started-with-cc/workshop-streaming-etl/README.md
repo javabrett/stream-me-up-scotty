@@ -67,8 +67,7 @@ An environment contains Confluent clusters and its deployed components such as C
 
     * Click **Begin Configuration**.
 
-    * Choose **GCP** as your Cloud Provider and your preferred Region.
-        > **Note:** GCP is required as your Cloud Provider since you will be utilizing the fully-managed BigQuery sink connector for this workshop
+    * Choose **AWS** as your Cloud Provider and your preferred Region (**Sydney (ap-southeast-2)**).
 
     * Specify a meaningful **Cluster Name** and then review the associated *Configuration & Cost*, *Usage Limits*, and *Uptime SLA* before clicking **Launch Cluster**.
 
