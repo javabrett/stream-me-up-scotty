@@ -30,8 +30,8 @@
     > **Note:** You will create resources during this workshop that will incur costs. New sign-ups receive $400 to spend within Confluent Cloud during their first 60 days. This will cover the cost of resources created during the workshop.
 
 1. Ports `443` and `9092` need to be open to the public internet for outbound traffic. To check, try accessing the following from your web browser:
-    * portquiz.net:443
-    * portquiz.net:9092
+    * http://portquiz.net:443
+    * http://portquiz.net:9092
 
 ***
 
