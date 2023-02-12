@@ -80,7 +80,7 @@ An environment contains Confluent clusters and its deployed components such as C
 
 1. Select **Global Access** and then **Continue**.
 
-1. Name your ksqlDB application and set the streaming units to
+1. Name your ksqlDB application and set the streaming units to 1.
 
 1. Click **Launch Application**!
 > **Note:** A streaming unit, also known as a Confluent Streaming Unit (CSU), is the unit of pricing for Confluent Cloud ksqlDB. A CSU is an abstract unit that represents the linearity of performance.
