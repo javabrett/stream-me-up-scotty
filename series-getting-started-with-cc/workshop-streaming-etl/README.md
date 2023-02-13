@@ -12,8 +12,10 @@
 1. [Create an API Key Pair](#step-4)
 1. [Getting Started with Apache Kafka and Java](#step-5)
 1. [Create Streams and Tables using ksqlDB](#step-6)
-1. [Clean Up Resources](#step-7)
-1. [Confluent Resources and Further Testing](#confluent-resources-and-further-testing)
+2. [Kafka Streams: Hands On: Aggregations](#step-7)
+2. [Spring Boot](#step-8)
+4. [Clean Up Resources](#step-8)
+5. [Confluent Resources and Further Testing](#confluent-resources-and-further-testing)
 
 ***
 
@@ -228,7 +230,26 @@ SELECT * FROM promo_alerts EMIT CHANGES LIMIT 3;
 
 ***
 
-## <a name="step-7"></a>Step 7: Clean Up Resources
+## <a name="step-7"></a>Step 7: Kafka Streams Hands On: Aggregations
+
+Complete the lesson at https://developer.confluent.io/learn-kafka/kafka-streams/hands-on-aggregations/ .
+
+Source code and solutions available from:
+
+```
+git clone https://github.com/confluentinc/learn-kafka-courses.git
+cd learn-kafka-courses/kafka-streams
+```
+
+***
+
+## <a name="step-8"></a>Step 8: Spring Boot
+
+Complete the exercise at https://developer.confluent.io/get-started/spring-boot/ .
+
+***
+
+## <a name="step-9"></a>Step 9: Clean Up Resources
 
 Deleting the resources you created during this workshop will prevent you from incurring additional charges.
 
