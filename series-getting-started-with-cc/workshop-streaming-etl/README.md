@@ -10,11 +10,10 @@
 1. [Create an Environment and Cluster](#step-2)
 1. [Setup ksqlDB](#step-4)
 1. [Create an API Key Pair](#step-6)
-2. [Getting Started with Apache Kafka and Java](#step-7)
-3. [Create Streams and Tables using ksqlDB](#step-9)
-4. [Stream Processing with ksqlDB](#step-10)
-6. [Clean Up Resources](#step-11)
-7. [Confluent Resources and Further Testing](#confluent-resources-and-further-testing)
+1. [Getting Started with Apache Kafka and Java](#step-7)
+1. [Create Streams and Tables using ksqlDB](#step-9)
+1. [Clean Up Resources](#step-11)
+1. [Confluent Resources and Further Testing](#confluent-resources-and-further-testing)
 
 ***
 
@@ -225,59 +224,6 @@ Set property `auto.offset.reset` to `Earliest` in the query form.  Then run:
 
 ```
 SELECT * FROM promo_alerts EMIT CHANGES LIMIT 3;
-```
-
-***
-
-## <a name="step-10"></a>Step 10: Stream Processing with ksqlDB
-
-1. Create a **PRODUCT_TXN_PER_HOUR** table based on the **INVENTORY** table and **TRANSACTIONS** stream.  Make sure to first set 'auto.offset.reset' = 'earliest' before running the query.
-
-```SQL
-CREATE TABLE PRODUCT_TXN_PER_HOUR WITH (FORMAT='AVRO') AS
-SELECT T.FULLDOCUMENT->PROD_ID,
-       COUNT(*) AS TXN_PER_HOUR,
-       MAX(I.TXN_HOUR) AS EXPECTED_TXN_PER_HOUR,
-       (CAST(MAX(I.AVAILABLE) AS DOUBLE)/ CAST(MAX(I.CAPACITY) AS DOUBLE))*100 AS STOCK_LEVEL, I.NAME AS PRODUCT_NAME
-FROM  TRANSACTIONS T
-      LEFT JOIN INVENTORY I
-      ON T.FULLDOCUMENT->PROD_ID = I.PRODUCT_ID
-WINDOW HOPPING (SIZE 1 HOUR, ADVANCE BY 5 MINUTES)
-GROUP BY T.FULLDOCUMENT->PROD_ID,
-         I.NAME;
-```
-
-2. Create a stream on the underlying topic backing the **PRODUCT_TXN_PER_HOUR** table that you just created
-    * Determine the name of the backing topic by navigating to the **Topics** tab on the left hand side menu under **Cluster**.  You should see a topic that begins with **pksqlc-**… and ends with **PRODUCT_TXN_PER_HOUR**. Click on this topic and copy down this topic name as it will be required for the following query
-    * Create the stream based on the backing topic for PRODUCT_TXN_PER_HOUR table
-
-```SQL
-CREATE STREAM PRODUCT_TXN_PER_HOUR_STREAM WITH (KAFKA_TOPIC='pksqlc-...PRODUCT_TXN_PER_HOUR', FORMAT='AVRO');
-```
-
-3. Now you want to perform a query to see which products you should create promotions for based on the following criteria
-    * High inventory level (>80% of capacity)
-    * Low transactions (< expected transactions/hour)
-
-```SQL
-CREATE STREAM ABC_PROMOTIONS AS
-SELECT  ROWKEY,
-        TIMESTAMPTOSTRING(ROWTIME,'yyyy-MM-dd HH:mm:ss','Europe/London') AS TS,
-        AS_VALUE(ROWKEY -> PROD_ID) AS PROD_ID ,
-        ROWKEY -> PRODUCT_NAME AS PRODUCT_NAME,
-        STOCK_LEVEL ,
-        TXN_PER_HOUR ,
-        EXPECTED_TXN_PER_HOUR
-   FROM PRODUCT_TXN_PER_HOUR_STREAM
-WHERE TXN_PER_HOUR < EXPECTED_TXN_PER_HOUR
-  AND  STOCK_LEVEL > 80
-  ;
-```
-
-4. Query the results.  Make sure to set ‘auto.offset.reset=earliest’
-
-```SQL
-SELECT * FROM ABC_PROMOTIONS EMIT CHANGES;
 ```
 
 ***
