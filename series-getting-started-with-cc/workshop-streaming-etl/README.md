@@ -107,101 +107,126 @@ Complete the exercises outlined in [Getting Started with Apache Kafka and Java](
 
 ## <a name="step-9"></a>Step 9: Create Streams and Tables using ksqlDB
 
-Now that you have data flowing through Confluent, you can now easily build stream processing applications using ksqlDB. You are able to continuously transform, enrich, join, and aggregate your data using simple SQL syntax. You can gain value from your data directly from Confluent in real-time. Also, ksqlDB is a fully managed service within Confluent Cloud with a 99.9% uptime SLA. You can now focus on developing services and building your data pipeline while letting Confluent manage your resources for you.
+Visit https://developer.confluent.io/tutorials/location-based-alerting/confluent.html and read the ksqlDB use-case.  Then visit your ksqlDB cluster editor, and run the following query:
 
-With ksqlDB, you have the ability to leverage streams and tables from your topics in Confluent. A stream in ksqlDB is a topic with a schema and it records the history of what has happened in the world as a sequence of events. Tables are similar to traditional RDBMS tables. If you’re interested in learning more about ksqlDB and the differences between streams and tables, I recommend reading these two blogs [here](https://www.confluent.io/blog/kafka-streams-tables-part-3-event-processing-fundamentals/) and [here](https://www.confluent.io/blog/how-real-time-stream-processing-works-with-ksqldb/).
+```
+SET 'auto.offset.reset' = 'earliest';
 
-1. Navigate back to the ksqlDB tab and click on your application name. This will bring us to the ksqlDB editor.
-
->**Note:** You can interact with ksqlDB through the Editor. You can create a stream by using the CREATE STREAM statement and a table using the CREATE TABLE statement.
-
-To write streaming queries against topics, you will need to register the topics with ksqlDB as a stream and/or table.
-
-2. First, create a **Stream** by registering the **abc.clicks** topic as a stream called **clicks**
-
-    * Insert the following query into the ksqlDB editor and click ‘**Run query**’ to execute
-
-```SQL
-CREATE STREAM clicks(
-    ip VARCHAR,
-    userid INT,
-    prod_id INT,
-    bytes BIGINT,
-    referrer VARCHAR,
-    agent VARCHAR,
-    click_ts BIGINT
-    )
-WITH (
-    KAFKA_TOPIC='abc.clicks',
-    VALUE_FORMAT='JSON',
-    TIMESTAMP='click_ts'
+-- Creates a table of merchant data including the calculated geohash
+CREATE TABLE merchant_locations (
+  id INT PRIMARY KEY,
+  description VARCHAR,
+  latitude DECIMAL(10,7),
+  longitude DECIMAL(10,7),
+  geohash VARCHAR
+) WITH (
+  KAFKA_TOPIC = 'merchant-locations',
+  VALUE_FORMAT = 'JSON',
+  PARTITIONS = 6
 );
+
+-- Creates a table to lookup merchants based on a
+--    substring (precision) of the geohash
+CREATE TABLE merchants_by_geohash
+WITH (
+  KAFKA_TOPIC = 'merchant-geohash',
+  FORMAT = 'JSON',
+  PARTITIONS = 6
+) AS
+SELECT
+  SUBSTRING(geohash, 1, 6) AS geohash,
+  COLLECT_LIST(id) as id_list
+FROM merchant_locations
+GROUP BY SUBSTRING(geohash, 1, 6)
+EMIT CHANGES;
+
+-- Creates a stream of user location data including the calculated geohash
+CREATE STREAM user_locations (
+  id INT,
+  latitude DECIMAL(10,7),
+  longitude DECIMAL(10,7),
+  geohash VARCHAR
+) WITH (
+  KAFKA_TOPIC = 'user-locations',
+  VALUE_FORMAT = 'JSON',
+  PARTITIONS = 6
+);
+
+-- Creates a stream of alerts when a user's geohash based location roughly
+--    intersects a collection of merchants locations from the
+--    merchants_by_geohash table.
+CREATE STREAM alerts_raw
+WITH (
+  KAFKA_TOPIC = 'alerts-raw',
+  VALUE_FORMAT = 'JSON',
+  PARTITIONS = 6
+) AS
+SELECT
+  user_locations.id as user_id,
+  user_locations.latitude AS user_latitude,
+  user_locations.longitude AS user_longitude,
+  SUBSTRING(user_locations.geohash, 1, 6) AS user_geohash,
+  EXPLODE(merchants_by_geohash.id_list) AS merchant_id
+FROM user_locations
+LEFT JOIN merchants_by_geohash ON SUBSTRING(user_locations.geohash, 1, 6) =
+  merchants_by_geohash.geohash
+PARTITION BY null
+EMIT CHANGES;
+
+-- Creates a stream of promotion alerts to send a user when their location
+--    intersects with a merchant within a specified distance (0.2 KM)
+CREATE STREAM promo_alerts
+WITH (
+  KAFKA_TOPIC = 'promo-alerts',
+  VALUE_FORMAT = 'JSON',
+  PARTITIONS = 6
+) AS
+SELECT
+  alerts_raw.user_id,
+  alerts_raw.user_geohash,
+  merchant_locations.description AS merchant_description,
+  CAST(
+    GEO_DISTANCE(alerts_raw.user_latitude, alerts_raw.user_longitude,
+                 merchant_locations.latitude, merchant_locations.longitude,
+        'KM') * 1000 AS INT) as distance_meters,
+  STRUCT(lat := CAST(alerts_raw.user_latitude AS DOUBLE), lon := CAST(alerts_raw.user_longitude AS DOUBLE)) AS geopoint
+FROM alerts_raw
+LEFT JOIN merchant_locations on alerts_raw.merchant_id = merchant_locations.id
+WHERE GEO_DISTANCE(
+        alerts_raw.user_latitude, alerts_raw.user_longitude,
+        merchant_locations.latitude, merchant_locations.longitude, 'KM') < 0.2
+PARTITION BY null
+EMIT CHANGES;
 ```
 
-3. Create another **Stream** by registering the **abc.transactions** topic as a stream called **transactions**
+Then generate sample data and read-back the results:
 
-```sql
-CREATE STREAM transactions (
-  fullDocument STRUCT<
-    cust_id INT,
-    prod_id INT,
-    txn_ts BIGINT>)
-  WITH (
-    KAFKA_TOPIC='abc.transactions',
-    VALUE_FORMAT='JSON'
-  );
+```
+-- For the purposes of this recipe when testing by inserting records manually,
+--  a short pause between these insert groups is required. This allows
+--  the merchant location data to be processed by the merchants_by_geohash
+--  table before the user location data is joined in the alerts_raw stream.
+INSERT INTO MERCHANT_LOCATIONS (id, latitude, longitude, description, geohash) VALUES (1, 14.5486606, 121.0477211, '7-Eleven RCBC Center', 'wdw4f88206fx');
+INSERT INTO MERCHANT_LOCATIONS (id, latitude, longitude, description, geohash) VALUES (2, 14.5473328, 121.0516176, 'Jordan Manila', 'wdw4f87075kt');
+INSERT INTO MERCHANT_LOCATIONS (id, latitude, longitude, description, geohash) VALUES (3, 14.5529666, 121.0516716, 'Lawson Eco Tower', 'wdw4f971hmsv');
 ```
 
-4. Create another **Stream** by registering the **abc.inventory** topic as a stream called **inventory00**
+Wait 10 seconds, then:
 
-```SQL
-CREATE STREAM inventory00 (
-  fullDocument STRUCT<
-    product_id INT,
-    name VARCHAR,
-    "list" INT,
-    discount INT,
-    available INT,
-    capacity INT,
-    txn_hour INT>)
-  WITH (
-    KAFKA_TOPIC='abc.inventory',
-    VALUE_FORMAT='JSON'
-  );
+```
+INSERT INTO USER_LOCATIONS (id, latitude, longitude, geohash) VALUES (1, 14.5472791, 121.0475401, 'wdw4f820h17g');
+INSERT INTO USER_LOCATIONS (id, latitude, longitude, geohash) VALUES (2, 14.5486952, 121.0521851, 'wdw4f8e82376');
+INSERT INTO USER_LOCATIONS (id, latitude, longitude, geohash) VALUES (2, 14.5517401, 121.0518652, 'wdw4f9560buw');
+INSERT INTO USER_LOCATIONS (id, latitude, longitude, geohash) VALUES (2, 14.5500341, 121.0555802, 'wdw4f8vbp6yv');
 ```
 
-5. Create an **inventory Table** based on the **inventory00** stream that you just created
-    * Make sure to set ‘auto.offset.reset’ = ‘earliest’ first
-    * This is a Persistent Query.  A Persistent Query runs indefinitely as it processes rows of events and writes to a new topic. You can create persistent queries by deriving new streams and new tables from existing streams or tables.
+Finally, read the results:
 
-```SQL
-CREATE TABLE INVENTORY AS
-  SELECT
-FULLDOCUMENT->PRODUCT_ID AS PRODUCT_ID,
-LATEST_BY_OFFSET(FULLDOCUMENT->NAME) AS NAME,
-LATEST_BY_OFFSET(FULLDOCUMENT->"list") AS LIST_PRICE,
-LATEST_BY_OFFSET(FULLDOCUMENT->DISCOUNT) AS DISCOUNT,
-LATEST_BY_OFFSET(FULLDOCUMENT->AVAILABLE) AS AVAILABLE,
-LATEST_BY_OFFSET(FULLDOCUMENT->CAPACITY) AS CAPACITY,
-LATEST_BY_OFFSET(FULLDOCUMENT->TXN_HOUR) AS TXN_HOUR
-FROM INVENTORY00
-GROUP BY FULLDOCUMENT->PRODUCT_ID;
+Set property `auto.offset.reset` to `Earliest` in the query form.  Then run:
+
 ```
-
-6. Next, go to the **Tables** tab at the top and click on **INVENTORY**. This provides information on the table, topic (including replication, partitions, and key and value serialization), and schemas.
-
-7. Click on **Query table** which will take you back to the **Editor**. You will see the following query auto-populated in the editor which may be already running by default. If not, click on **Run query**. An option is to set the ‘auto.offset.reset=earliest’ before clicking **Run query**.
-
-Optionally, you can navigate to the editor and construct the select statement on your own, which should look like the following:
-
-```SQL
-SELECT * FROM INVENTORY EMIT CHANGES;
+SELECT * FROM promo_alerts EMIT CHANGES LIMIT 3;
 ```
-
-8. You should see the following data within your **INVENTORY** table.
-
-9. Stop the query by clicking **Stop**
-
 
 ***
 
