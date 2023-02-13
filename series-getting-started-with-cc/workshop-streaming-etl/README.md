@@ -13,7 +13,6 @@
 2. [Getting Started with Apache Kafka and Java](#step-7)
 3. [Create Streams and Tables using ksqlDB](#step-9)
 4. [Stream Processing with ksqlDB](#step-10)
-5. [Connect BigQuery sink to Confluent Cloud](#step-11)
 6. [Clean Up Resources](#step-11)
 7. [Confluent Resources and Further Testing](#confluent-resources-and-further-testing)
 
@@ -280,43 +279,6 @@ WHERE TXN_PER_HOUR < EXPECTED_TXN_PER_HOUR
 ```SQL
 SELECT * FROM ABC_PROMOTIONS EMIT CHANGES;
 ```
-
-***
-
-## <a name="step-11"></a>Step 11: Connect BigQuery sink to Confluent Cloud
-
-The next step is to sink data from Confluent Cloud into BigQuery using the [fully-managed BigQuery Sink connector](https://docs.confluent.io/cloud/current/connectors/cc-gcp-bigquery-sink.html). The connector will send real time data on promotions into BigQuery.
-
-1. First, you will create the connector that will automatically create a BigQuery table and populate that table with the data from the promotions topic within Confluent Cloud. From the Confluent Cloud UI, click on the Connectors tab on the navigation menu and select **+Add connector**. Search and click on the BigQuery Sink icon.
-
-2. Enter the following configuration details. The remaining fields can be left blank.
-
-<div align="center">
-
-| Setting            | Value                        |
-|------------------------|-----------------------------------------|
-| `Topics`      | pksqlc-...ABC_PROMOTIONS |
-| `Name`              | BigQuerySinkConnector                 |
-| `Input message format`           | Avro            |
-| `Kafka API Key`    | From step 6           |
-| `Kafka API Secret` | From step 6              |
-| `GCP credentials file`    | [JSON file link](https://drive.google.com/drive/folders/1EOYZkyWvpnCydBCv2hv8DMH8FlZKuXKV)            |
-| `Project ID`    | Will be provided during workshop          |
-| `Dataset`    | Will be provided during workshop          |
-| `Auto create tables`    | True          |
-| `Tasks`    | 1             |
-
-</div>
-
-3. Click on **Next**.
-
-4. Before launching the connector, you will be brought to the summary page.  Once you have reviewed the configs and everything looks good, select **Launch**.
-
-5. This should return you to the main Connectors landing page. Wait for your newly created connector to change status from **Provisioning** to **Running**.
-
-6. Shortly after, the workshop instructor will switch over to the BigQuery page within Google Console to show that a table matching the topic name you used when creating the BigQuery connector in Confluent Cloud has been created within the **workshop** dataset.  Clicking the table name should open a BigQuery editor for it:
-
-
 
 ***
 
