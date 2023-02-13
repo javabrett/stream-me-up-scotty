@@ -8,11 +8,11 @@
 ## **Agenda**
 1. [Log Into Confluent Cloud](#step-1)
 1. [Create an Environment and Cluster](#step-2)
-1. [Setup ksqlDB](#step-4)
-1. [Create an API Key Pair](#step-6)
-1. [Getting Started with Apache Kafka and Java](#step-7)
-1. [Create Streams and Tables using ksqlDB](#step-9)
-1. [Clean Up Resources](#step-11)
+1. [Setup ksqlDB](#step-3)
+1. [Create an API Key Pair](#step-4)
+1. [Getting Started with Apache Kafka and Java](#step-5)
+1. [Create Streams and Tables using ksqlDB](#step-6)
+1. [Clean Up Resources](#step-7)
 1. [Confluent Resources and Further Testing](#confluent-resources-and-further-testing)
 
 ***
@@ -70,7 +70,7 @@ An environment contains Confluent clusters and its deployed components such as C
 
 ***
 
-## <a name="step-4"></a>Step 4: Setup ksqlDB
+## <a name="step-3"></a>Step 3: Setup ksqlDB
 
 1. On the navigation menu, select **ksqlDB** and click **Create cluster myself**.
 
@@ -83,7 +83,7 @@ An environment contains Confluent clusters and its deployed components such as C
 
 ***
 
-## <a name="step-6"></a>Step 6: Create an API Key Pair
+## <a name="step-4"></a>Step 4: Create an API Key Pair
 
 1. Select **API keys** on the navigation menu.
 
@@ -97,13 +97,13 @@ An environment contains Confluent clusters and its deployed components such as C
 
 ***
 
-## <a name="step-7"></a>Step 7: Getting Started with Apache Kafka and Java
+## <a name="step-5"></a>Step 5: Getting Started with Apache Kafka and Java
 
 Complete the exercises outlined in [Getting Started with Apache Kafka and Java](https://developer.confluent.io/get-started/java).
 
 ***
 
-## <a name="step-9"></a>Step 9: Create Streams and Tables using ksqlDB
+## <a name="step-6"></a>Step 6: Create Streams and Tables using ksqlDB
 
 Visit https://developer.confluent.io/tutorials/location-based-alerting/confluent.html and read the ksqlDB use-case.  Then visit your ksqlDB cluster editor, and run the following query:
 
@@ -228,7 +228,7 @@ SELECT * FROM promo_alerts EMIT CHANGES LIMIT 3;
 
 ***
 
-## <a name="step-12"></a>Step 12: Clean Up Resources
+## <a name="step-7"></a>Step 7: Clean Up Resources
 
 Deleting the resources you created during this workshop will prevent you from incurring additional charges.
 
